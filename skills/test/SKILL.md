@@ -130,15 +130,15 @@ Ask: "<missing tools> not installed. Install now?"  (header: "Install")
 - "No, write runnable stubs": "Skip install; write tests I can run once I install the tools myself"
 ```
 
-Yes: install with the project's package manager (`pnpm` shown; substitute the detected npm/yarn/bun, or the language's manager for Python/Go):
+Yes: install with the detected package manager, shown here as `<pkgmgr>` (the detected npm / yarn / pnpm / bun; for Python/Go use the language's manager):
 
 ```bash
-pnpm add -D vitest                                            # unit
-pnpm add -D @testing-library/react @testing-library/user-event @testing-library/jest-dom  # addon
-pnpm add -D @playwright/test && pnpm exec playwright install  # E2E (Playwright)
-pnpm add -D cypress                                          # E2E (Cypress)
-pip install pytest pytest-mock                                # Python
-go get github.com/stretchr/testify                           # Go
+<pkgmgr> add -D vitest                                            # unit
+<pkgmgr> add -D @testing-library/<framework> @testing-library/user-event @testing-library/jest-dom  # addon
+<pkgmgr> add -D @playwright/test && <pkgmgr> exec playwright install  # E2E (Playwright)
+<pkgmgr> add -D cypress                                          # E2E (Cypress)
+pip install pytest pytest-mock                                    # Python
+go get <testify module path>                                      # Go
 ```
 
 "No": record `INSTALL=deferred`; write complete tests anyway, the run command is reported as "run after installing".
@@ -154,7 +154,7 @@ With file tools:
 - Identify the governing spec: the feature dir `docs/specs/NNNN-<feature>/` (or single `docs/specs/NNNN-<feature>.md`) these files implement, matched by branch/feature name or touched surfaces (a `docs/scope/` entry, if present, points to it). Note its path and whether a `verify.md` sits beside it (`docs/specs/NNNN-<feature>/verify.md`). This contract is what tests trace to; it may not be among the 3 recent paths. Set `TRACE_TO_CONTRACT = yes` when a governing spec exists, else `no`.
 - Note whether `design.md` exists at the project root; use its path only when a **component** or **page/flow** file is in scope, else `none`.
 - Read `AGENTS.md` (canonical; `CLAUDE.md` if absent) as project context (short and cheap). Also note the build approach as one line: the slice shaping approach the team chose, recorded in the scope header (or root `AGENTS.md`), e.g. thin end to end path, thinnest usable whole core loop, UI first shell on placeholders, full user journey per phase. It doesn't branch the logic; it calibrates your judgment when writing (Step 8, rule a).
-- Read `package.json`, note `scripts.test`. `RUN_COMMAND` = `<pkgmgr> test` when a `test` script exists (`<pkgmgr> run test` for npm); a raw invocation (e.g. `pnpm exec vitest run`) only when none does.
+- Read `package.json`, note `scripts.test`. `RUN_COMMAND` = `<pkgmgr> test` when a `test` script exists (`<pkgmgr> run test` for npm); a raw invocation (e.g. `<pkgmgr> exec vitest run`) only when none does.
 
 ---
 

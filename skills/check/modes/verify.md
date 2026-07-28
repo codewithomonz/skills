@@ -76,12 +76,12 @@ No spec? From the changed files write the 2 to 5 concrete things a human could w
 
 ### Step 2: Determine how to run the app
 
-Monorepo: run the specific affected app, not the repo root. Find the workspace the change lives in (`apps/<x>/…`) and use its run command (e.g. `pnpm --filter <x> dev`, `turbo run dev --filter <x>`, or that workspace's `package.json` script). A change to a shared package: run the app(s) that consume it.
+Monorepo: run the specific affected app, not the repo root. Find the workspace the change lives in (`apps/<x>/…`) and use its run command (e.g. `<pkgmgr> --filter <x> dev`, the monorepo task runner's filtered command, or that workspace's `package.json` script). A change to a shared package: run the app(s) that consume it.
 
 In order:
 1. A project run skill / documented command: a project specific "run/start" skill, then `AGENTS.md`, then `package.json` scripts (`dev`, `start`), `Makefile`, `Procfile`, `docker-compose`. Prefer what the project already uses.
 2. Built in patterns by project type if nothing is documented:
-   - Web app → start the dev server, then drive the route: prefer a connected browser/Playwright MCP (real navigation, clicks, form submits, screenshots); else your agent's own browser tool; else, headless, request the route over HTTP and check the returned HTML plus a boot check (server starts, health route responds).
+   - Web app → start the dev server, then drive the route: prefer a connected browser automation MCP (real navigation, clicks, form submits, screenshots); else your agent's own browser tool; else, headless, request the route over HTTP and check the returned HTML plus a boot check (server starts, health route responds).
    - API / backend → start the server, hit the endpoint (curl/HTTP client).
    - CLI → run the command with representative arguments.
    - Library → exercise the public API via a tiny scratch script or the REPL.
@@ -91,7 +91,7 @@ Can't tell how to launch it? Ask the engineer for the start command before proce
 
 ### Step 3: Run and exercise
 
-Launch the app (prefer a background process so you can interact with it). Use a connected MCP where it makes the check real: a browser/Playwright MCP to drive the UI (navigate, click, type, submit, screenshot); a database MCP to confirm the live schema for a data layer criterion (the migration applied check in Step 4b: proof the column really exists, not an assumption). For heavier interaction, spawn a subagent with the tools to drive the browser/CLI and capture evidence, keeping the main context clean. Per scoped behavior:
+Launch the app (prefer a background process so you can interact with it). Use a connected MCP where it makes the check real: a browser automation MCP to drive the UI (navigate, click, type, submit, screenshot); a database MCP to confirm the live schema for a data layer criterion (the migration applied check in Step 4b: proof the column really exists, not an assumption). For heavier interaction, spawn a subagent with the tools to drive the browser/CLI and capture evidence, keeping the main context clean. Per scoped behavior:
 - UI → navigate to the route, interact (click, type, submit), screenshot the result and any error state. Check the rendered output, not just a 200.
 - API → send the request, capture status + body; verify the shape and key fields.
 - CLI / job → run it, capture stdout/stderr and any output artifact.

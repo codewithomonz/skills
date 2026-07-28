@@ -115,11 +115,11 @@ Use the template below. `## Stack`: spec, else findings, else `<to be filled>`. 
 
 If `INSTALLED_SKILLS_OR_NONE` is provided, write a `## Agent skills` section (template above): ONE bullet per skill, `- [<skill>](<skills-dir>/<skill>/): `<owner>/<repo>`, <what it covers>`, so a later skill loads only the ones it needs, never a dense line of names. Detect the project's real skills directory (`.claude/skills/` on Claude Code, `.agents/skills/` on other agents, or plain `skills/`) for the link; never hardcode a Claude only path, since every tool reads this file. Keep `<owner>/<repo>` on each bullet as the tool agnostic identity. If `DECLINED_TOOLS_OR_NONE`, add a compact `Declined: <tool>, <tool>` line (nothing to load, so no location; stops a later `/audit` or `/architect` offering again it). If `MCP_SERVERS_OR_NONE`, add a compact `MCP servers: <server> (connected|recommended)` line. Project wide tech at root; area specific at that area's nested doc.
 
-Monorepo: keep root to monorepo wide concerns (workspace tooling `pnpm`/`turbo`/`nx`, shared standards, a `## Context files` section pointing at each workspace's nested doc); per app stack does not go in root.
+Monorepo: keep root to monorepo wide concerns (the workspace tooling, meaning the monorepo's package manager and task runner, shared standards, a `## Context files` section pointing at each workspace's nested doc); per app stack does not go in root.
 
 **Step 2b: Per workspace nested AGENTS.md (monorepo only)**
 
-If `MONOREPO_OR_NO` is `yes`: for each workspace (`apps/*`, `packages/*`), read its manifest. Even with no features built, the scaffold declares the workspace's stack and commands; capture them so `/architect` and `/develop` read them from the workspace's own doc (not root). Write `<workspace>/AGENTS.md` with the nested template (`## Stack` from its manifest, `## Commands` from its scripts, scoped, e.g. `pnpm --filter <name> dev`, root `## Rules` inherited by reference), the sibling `<workspace>/CLAUDE.md` pointer, and a pointer under root's `## Context files`. Skip an empty workspace with no manifest.
+If `MONOREPO_OR_NO` is `yes`: for each workspace (`apps/*`, `packages/*`), read its manifest. Even with no features built, the scaffold declares the workspace's stack and commands; capture them so `/architect` and `/develop` read them from the workspace's own doc (not root). Write `<workspace>/AGENTS.md` with the nested template (`## Stack` from its manifest, `## Commands` from its scripts, scoped to the workspace, e.g. a filtered dev command like `<pkgmgr> --filter <name> dev`, root `## Rules` inherited by reference), the sibling `<workspace>/CLAUDE.md` pointer, and a pointer under root's `## Context files`. Skip an empty workspace with no manifest.
 
 **Step 3: Report** (format at the bottom); list every per workspace doc created.
 
@@ -146,7 +146,7 @@ Stack, runtime, framework; daily commands (install, dev, build, test); conventio
 
 **Step 4: Create nested AGENTS.md**
 
-Monorepo (`MONOREPO_OR_NO` = yes): don't judge or deep scan. Every workspace (`apps/*`, `packages/*`) gets a light stub `AGENTS.md` at its root (`## Stack` + `## Commands` from its manifest, scoped, e.g. `pnpm -F <name> …`, plus a one line overview), the sibling `CLAUDE.md` pointer, and a root `## Context files` pointer. Deep conventions come later via `/audit <workspace>`. A doc buried below a workspace root with no root doc: follow the relocation rule the main agent surfaced. Skip the judgment step below.
+Monorepo (`MONOREPO_OR_NO` = yes): don't judge or deep scan. Every workspace (`apps/*`, `packages/*`) gets a light stub `AGENTS.md` at its root (`## Stack` + `## Commands` from its manifest, scoped, e.g. `<pkgmgr> -F <name> …`, plus a one line overview), the sibling `CLAUDE.md` pointer, and a root `## Context files` pointer. Deep conventions come later via `/audit <workspace>`. A doc buried below a workspace root with no root doc: follow the relocation rule the main agent surfaced. Skip the judgment step below.
 
 Single repo: identify the major areas/modules (e.g. `src/auth`, `src/payments`, `src/api`); judge each. Warrants a nested doc: distinct conventions, not obvious rules, local commands, external integrations, or gotchas a developer must know before touching it. Does not: a simple module with no surprises, or root already covers it (skip; never one per folder). For each warranted area: write `<area>/AGENTS.md` with the nested template, its sibling `<area>/CLAUDE.md` pointer, and one pointer line in root's `## Context files` via Edit:
 ```
