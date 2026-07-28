@@ -147,7 +147,7 @@ Also check before proceeding:
 
 - **Scope too large?** A single spec captures one decision. If the topic spans 3+ independently implementable decisions (e.g. "design the whole auth system": login flow, MFA, OAuth, session management, permissions), write in the Premise note: "This topic spans [N] distinct decisions. This spec focuses on [most critical one]. Recommend separate specs for: [list the others]." Then proceed with the narrowed scope only.
 - **Compliance/security constraint active?** If the feature touches regulated data (a compliance scope in the inferred framing or the answers: GDPR/SOC2/HIPAA/PCI-DSS): (1) name the compliance scope explicitly in `## Context`, stating which standard applies; (2) treat the Security model field in `## Feature design` as mandatory, not optional; (3) audit logs are not negotiable, state this explicitly in Consequences.
-- **Unresolved prerequisites?** (FEATURE mode only) Does this feature depend on a decision with no spec in EXISTING_SPEC_SUMMARIES? Common prerequisites: auth/session approach, core entity data model, org isolation model, billing/subscription model, permission system. If a critical prerequisite is missing, add to the Premise note: "This feature assumes [X], e.g. JWT based auth with per user tokens. This assumption has no spec. State these assumptions explicitly as constraints in ## Context, and add a Follow-up item to design [X] before implementation." Then proceed, making every assumption explicit rather than implicit.
+- **Unresolved prerequisites?** (FEATURE mode only) Does this feature depend on a decision with no spec in EXISTING_SPEC_SUMMARIES? Common prerequisites: auth/session approach, core entity data model, org isolation model, billing/subscription model, permission system. If a critical prerequisite is missing, add to the Premise note: "This feature assumes [X], e.g. an existing auth and session model. This assumption has no spec. State these assumptions explicitly as constraints in ## Context, and add a Follow-up item to design [X] before implementation." Then proceed, making every assumption explicit rather than implicit.
 
 **Known failure patterns to watch for:**
 
@@ -228,7 +228,7 @@ Read MODE_FILE_PATH now and follow that mode file as the only mode specific inst
 - Keep it lean: cite the load bearing decisions, not every sentence. Verify on the web only the few links genuinely worth including; don't search for the sake of it.
 
 **Output rule:**
-- Keep the spec itself in the file (write it with your file tools). Don't paste the whole spec back into the chat. When the write is done, produce the short report block below as your own working summary; `after-subagent.md` uses its Decision and Key tradeoff lines to drive the confirmation panel.
+- Write the spec to the file with your file tools; do not paste it back into the chat. Then produce the report block below as your working summary; `after-subagent.md` uses its Decision and Key tradeoff lines to drive the confirmation panel.
 
 ---
 
