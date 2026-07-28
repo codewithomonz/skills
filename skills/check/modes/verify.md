@@ -4,18 +4,9 @@ The `verify` mode of `/check`: run the real app and prove the change works. Foll
 
 ## What this skill does
 
-Your role: the acceptance engineer. Trust observed behavior over green checkmarks; a passing suite proves the code the author thought to test, not that the feature exists. Ask: "If I had to sign off that this is real, what would I need to watch happen with my own eyes?" Then drive the actual thing and judge what you see against what the slice was supposed to deliver.
+Your role: the acceptance engineer. Trust observed behavior over green checkmarks; a passing suite proves the code the author thought to test, not that the feature exists. Drive the actual thing and judge what you see against what the slice was meant to deliver. `/check verify` closes the gap between "the tests are green" and "the feature actually works": scope the change into observable behaviors, run the app the project's own way, exercise the flow and observe (screenshots for UI, bodies for APIs, output for CLIs, logs for jobs), then report pass/fail per behavior and per acceptance criterion. It is the runtime counterpart to `/test`, which writes the assertions that then run forever.
 
-`/check verify` closes the gap between "the tests are green" and "the feature actually works":
-
-1. Scopes what changed (from git) into observable behaviors to check, anchored to the spec's acceptance criteria when a governing spec exists.
-2. Runs the app the project's own way, reusing its launch method when one exists.
-3. Exercises the changed flow and observes: screenshots for UI, response bodies for APIs, output for CLIs, logs for jobs.
-4. Reports pass/fail per behavior and per acceptance criterion, anything anomalous, and what `/test` should turn into permanent assertions.
-
-Runtime counterpart to `/test`: `/test` writes assertions that run forever; `/check verify` opens the app once and confirms it's real before review.
-
-Spec conformance gate: when a governing spec has IDed acceptance criteria (`## Requirements`, `AC-1…`), also prove the implementation conforms to the contract: every criterion met, every specced surface (page, route, table) actually built. Green tests and a working happy path never reveal a surface that was specced but never built, or a migration never applied. See Step 0b and Step 4b.
+Spec conformance gate: when a governing spec has IDed acceptance criteria (`## Requirements`, `AC-1…`), also prove conformance: every criterion met, every specced surface (page, route, table) actually built. Green tests and a working happy path never reveal a specced but unbuilt surface, or an unapplied migration. See Step 0b and Step 4b.
 
 ## Asks vs acts
 
@@ -36,7 +27,7 @@ Any Agent Skills client on macOS, Linux, or Windows. Run/launch snippets are ref
 ### Step 0: Pick the mode
 
 - Feature mode (default): the change adds or alters behavior. Confirm it does the new thing (Steps 1 to 5).
-- Refactor / regression mode: the change is behavior preserving (a refactor, a dedup, a rename; the task or spec says "behavior must not change"). "Works" means identical before and after: capture observable outputs before the change, capture them after, and diff. This is the safety net for projects with no test runner, and exactly what a "diff API responses before/after" spec asks for; automate it.
+- Refactor / regression mode: the change is behavior preserving (a refactor, a dedup, a rename; the task or spec says "behavior must not change"). "Works" means identical before and after: capture observable outputs before the change, capture them after, and diff. Automate it; this is the safety net for a project with no test runner.
 
 ### Step 0a: Refactor mode: before/after diff (spawn a subagent)
 
@@ -44,7 +35,7 @@ Only in refactor mode. It drives the app twice and holds two output sets, so run
 - `model`: set explicitly to a strong model, do not inherit the session model (Claude Code: `sonnet`) · `description: "Verify: before/after diff, <scope>"` · Tools: `Read`, `Bash`, `Grep`, `Glob` (+ browser/HTTP driving)
 - Its job:
   1. Identify the affected surfaces from the diff (endpoints, queries, jobs, pages). Pick representative ones per changed area, favoring output that is most observable and most likely to reveal a behavior shift.
-  2. Capture BEFORE (the state before the change). Prefer a throwaway git worktree at the ref before the change (the base branch, or the commit before the refactor): `git worktree add <tmp> <ref>`, start the app in that worktree, hit each surface, save the raw outputs, `git worktree remove <tmp>`. This keeps the working tree and untracked files intact. Only if worktrees aren't available, fall back to `git stash --include-untracked` (plain `git stash` leaves new files behind and contaminates the "before"), restore with `git stash pop` after.
+  2. Capture BEFORE (the state before the change). Prefer a throwaway git worktree at the ref before the change (the base branch, or the commit before the refactor): `git worktree add <tmp> <ref>`, start the app in that worktree, hit each surface, save the raw outputs, `git worktree remove <tmp>`. Only if worktrees aren't available, fall back to `git stash --include-untracked` (plain `git stash` leaves new files behind and contaminates the "before"), restore with `git stash pop` after.
   3. Capture AFTER: with the change applied, start the app, hit the same surfaces the same way, save the outputs.
   4. Diff before vs after per surface. For a behavior preserving change they must be byte identical (modulo intentional, documented differences). Report any diff as a regression.
 - Relay: surfaces diffed, identical vs differing, the exact diff for any that changed → run `/debug`. Then stop (skip the feature mode steps).
@@ -71,9 +62,9 @@ You now hold the `AC-N` list to confirm and the specced surface list to confirm 
 
 ### Step 0c: Calibrate "working" to the build approach
 
-Know what this slice was meant to be. Read the build approach for THIS feature with precedence: the feature's scope row `Approach` override if its row declares one, else the project default (root `AGENTS.md`, else the scope header). This mirrors spec overrides-`AGENTS.md`: a feature declaring its own approach (e.g. a Facade prototype in an otherwise Skateboard project) is verified by ITS approach; every other feature uses the project default. If neither records one, use the reasoned default (an end to end / Tracer Bullet slice for production work) and note the assumption. The wrong bar produces false failures (dinging a prototype for lacking a real backend) or false passes (blessing a slice that never proved the path it existed to prove).
+Know what this slice was meant to be. Read the build approach for THIS feature with precedence: the feature's scope row `Approach` override if its row declares one, else the project default (root `AGENTS.md`, else the scope header). A feature declaring its own approach (e.g. a Facade prototype in a Skateboard project) is verified by ITS approach; others use the project default. If neither records one, use the reasoned default (an end to end / Tracer Bullet slice for production work) and note the assumption. The wrong bar produces false failures or false passes.
 
-Reason as the acceptance engineer about what done means for this slice; no fixed per approach script. The judgment: what did this slice promise to make real, and what is it explicitly still allowed to fake? Verify the former hard; don't fail the slice for the latter. Common framings and their bars: a thin end to end path wired through every layer (the whole path carries a real request to a real result); a thinnest usable whole core loop (that one loop genuinely works, not the trimmings); a UI first shell wired to placeholders (the shell and its placeholder flow render and navigate; a stubbed data source is the plan, not a defect); a full user journey per phase (the journey end to end, not isolated screens). Let the label set the bar, then carry it into the scope and the conformance verdict. Acceptance criteria govern what must be true; the approach tells how much of the stack behind them is expected to be real yet.
+The judgment: what did this slice promise to make real, and what is it still allowed to fake? Verify the former hard; don't fail the slice for the latter. Common framings and their bars: a thin end to end path wired through every layer (the whole path carries a real request to a real result); a thinnest usable core loop (that one loop genuinely works, not the trimmings); a UI first shell wired to placeholders (shell and placeholder flow render and navigate; a stubbed data source is the plan, not a defect); a full user journey per phase (the journey end to end, not isolated screens). Let the label set the bar, then carry it into the scope and conformance verdict. Acceptance criteria say what must be true; the approach says how much of the stack behind them is real yet.
 
 ### Step 1: Scope the observable behaviors *(feature mode)*
 
@@ -179,4 +170,4 @@ Drop the Spec conformance / Missed surfaces / Not applied sections when there wa
 
 Clean up any process you started. `/check verify` confirms reality, never fixes or asserts: `/debug` for failures, `/develop` to build a surface that is missing or not applied, `/test` to make passing behaviors permanent. A FAIL conformance verdict means the feature is not done, even if every test is green.
 
-A BLOCKED verdict is an honest, useful result: it says the change could not be exercised and names what would make it exercisable. A fabricated PASS is the one output this skill must never produce, because every later step trusts it.
+A BLOCKED verdict is honest and useful: it names what would make the change exercisable. A fabricated PASS is the one output this skill must never produce; every later step trusts it.

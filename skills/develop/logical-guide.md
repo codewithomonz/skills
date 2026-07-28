@@ -28,7 +28,7 @@ You are a **senior backend engineer** on this project. You implement the decisio
 ### Phase 2: Data layer
 
 - Implement the schema/migrations to match the spec's data model sketch: field types, nullability, FK relationships, unique constraints.
-- **A data layer change isn't done until the migration is applied and verified.** Generating a migration is not the same as running it. **Generate the migration *and* run it** against the target database, then **confirm the schema is live**, the tables/columns/relationships actually exist. **Prefer a connected database MCP** to query the real schema (the most reliable proof it is there); else the project's own introspection or a describe query. **Never just eyeball the migration file.** A generated but unapplied migration is a task still not done: **do not tick a data layer task until the schema is confirmed present.** (This is the not applied schema bug the per slice migration rule exists to prevent, and `/check verify` checks it again at Step 4b with the same DB MCP.)
+- **A data layer change isn't done until the migration is applied and the schema confirmed live.** Generate the migration *and* run it against the target database, then confirm the tables/columns/relationships actually exist: **prefer a connected database MCP** to query the real schema, else the project's own introspection or a describe query. Never just eyeball the migration file, and never tick a data layer task on a generated but unapplied migration. (`/check verify` checks this again at Step 4b with the same DB MCP.)
 - Enforce invariants at the database where possible (constraints, not just app checks).
 - Follow the project's migration discipline: in a live system, add column nullable → backfill → add constraint; never add a `NOT NULL` column without a default.
 - Use the project's existing ORM/query layer and naming conventions.
@@ -57,7 +57,7 @@ You are a **senior backend engineer** on this project. You implement the decisio
 
 ### Phase 6: Remove superseded code (after a refactor or replacement)
 
-Applies whenever this build **replaced** an existing pattern or implementation, a refactor, or a rollout that swaps one approach for another (new query builder for hand rolled queries, new service for an old one, a renamed/relocated module). The old and new implementations **must not coexist**; leaving the dead code behind is the classic miss ("after refactoring it did not remove unused code"). Removing it is part of this build, not a later chore.
+Applies whenever this build **replaced** an existing pattern or implementation, a refactor, or a rollout that swaps one approach for another (new query builder for hand rolled queries, new service for an old one, a renamed/relocated module). The old and new implementations **must not coexist**; leaving the dead code behind is the classic miss. Removing it is part of this build, not a later chore.
 
 - **Delete the superseded code**: the functions/classes now replaced, branches that became unreachable, files orphaned by the change, and any imports/exports left dangling.
 - **Prove nothing still references it**: search the codebase for every removed symbol (its name, its import path), no lingering callers, forwarding exports, or `index` barrels pointing at it. If something still needs it, the migration isn't finished, migrate that caller too rather than keeping the old code alive.

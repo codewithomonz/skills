@@ -4,9 +4,9 @@ UI build track for `/develop`, read after the spec gate (`SKILL.md` Step 0) clas
 
 ## The bar: read this first, it is the definition of done
 
-You are a senior product designer shipping a real product, not a developer wiring a form. Every UI page must leave as a complete, professional product surface, the quality you would expect from a top product or from Claude's own chat app, never a bare minimum stub. This is not optional styling advice. It is the definition of done for a UI build, committed here, before you start, so it cannot get crowded out by the token and accessibility rules later in this guide.
+You are a senior product designer shipping a real product, not a developer wiring a form. Every UI page must leave as a complete, professional product surface, the quality you would expect from a top product or from Claude's own chat app, never a bare minimum stub. This is not optional styling advice. It is the definition of done for a UI build.
 
-**Design first, then integrate.** The same model produces beautiful UI in a chat app and plain UI in a codebase because the codebase makes it satisfy tokens, libraries, and accessibility before it has designed anything, and the ambition dies. Build in two passes:
+**Design first, then integrate.** Build in two passes, so the codebase's constraints (tokens, libraries, accessibility) don't crush the design before it exists:
 1. **Design the surface** (bold, complete, opinionated), as if you were shipping it standalone, to the agreed design system. Compose the whole page (`ui/implementation.md` Phase 0).
 2. **Integrate it** into the codebase: installed styling library, real tokens, semantic HTML, accessibility, responsive (Phases 1 to 5).
 
@@ -18,7 +18,7 @@ You are a senior product designer shipping a real product, not a developer wirin
 - missing states (no empty / loading / error) or orphaned controls (a toggle or quick action with nothing around it)
 - a bare functional widget where a product would ship a full surface (brand, real copy, layout, supporting content, footer)
 
-**Prove it before you report.** Before declaring the UI done, audit the build yourself against these disqualifiers and against the page's `design.md` mandate, and fix every hit. When you have a browser or screenshot tool, render the page and look at it, the way a designer checks their own work, and fix any visual defect you see (the only reliable way to catch a broken render like a stray black bar). Say in the report what you audited.
+**Prove it before you report.** Before declaring the UI done, audit the build yourself against these disqualifiers and against the page's `design.md` mandate, and fix every hit. When you have a browser or screenshot tool, render the page and look at it, and fix any visual defect you see (the only reliable way to catch a broken render like a stray black bar). Say in the report what you audited.
 
 ## Design source (route by what you were given)
 
@@ -27,7 +27,7 @@ You are a senior product designer shipping a real product, not a developer wirin
 3. **A design system already exists** (`design.md` + tokens in CSS) → design the new page WITHIN that system, at the bar above: a full professional surface, consistent with what is already shipped. Route: `ui/existing.md`.
 4. **Nothing provided** → establish the design system first (the `frontend-design` skill when available, else derive it from the rules in `ui/generate.md` B2 and verify its contrast), record it in `design.md` (character + mandate + pointers) with the tokens written to CSS, then build to the bar above, maximalist and complete. Route: `ui/generate.md`.
 
-Cases 3 and 4 get the full chat app treatment (bold, complete, product level); case 2 gets faithful fidelity; case 1 gets Figma fidelity. Follow the source the spec recorded; never default to Figma just because an MCP is connected.
+Cases 3 and 4 get the full chat app treatment (bold, complete, product level); case 2 gets faithful fidelity; case 1 gets Figma fidelity. Follow the source the spec recorded.
 
 All paths converge on: component or screen → stack detection → styling library → dark mode → token sync → font → the implementation phases.
 
@@ -39,11 +39,11 @@ The UI build serves the project's build approach (read in `SKILL.md` Step 2), ne
 
 ## Portability (any OS, any agent)
 
-Any Agent Skills client, macOS/Linux/Windows. Detection snippets (`find`, `cat | grep`, `cp`) are POSIX reference, not literal scripts: use your agent's own cross platform file tools to find files and read `package.json`/config. Bundled files (`checklist.md`, `ui/*.md`) are paths relative to this skill's folder, read on demand: read this guide's phases as reached, not all up front. The UI build runs inline (it is interactive); heavy code exploration (finding existing components/tokens to match) goes to a read only subagent per `SKILL.md` Step 2.5. App code/CSS is inherently cross platform. No interactive question picker: ask the prompts as plain text with the same options.
+Any Agent Skills client, macOS/Linux/Windows. Detection snippets (`find`, `cat | grep`, `cp`) are POSIX reference: use your agent's own cross platform file tools. Bundled files (`checklist.md`, `ui/*.md`) are paths relative to this skill's folder, read on demand: read this guide's phases as reached, not all up front. The UI build runs inline (it is interactive); heavy code exploration (finding existing components/tokens to match) goes to a read only subagent per `SKILL.md` Step 2.5. No interactive question picker: ask the prompts as plain text with the same options.
 
 ## Step 0: Where the design comes from (one decision, made once)
 
-Check the governing spec first (`/develop` read it in Step 2). The design source is the engineer's choice and `/architect` already grilled them on it, so follow what the spec recorded, never ask again, and never default to Figma just because an MCP is connected.
+Check the governing spec first (`/develop` read it in Step 2). The design source is the engineer's choice, so follow what the spec recorded, never ask again, and never default to Figma just because an MCP is connected.
 
 Route on what the spec recorded, using the *Design source* table above:
 - Figma or another design MCP → `ui/mcp.md`.

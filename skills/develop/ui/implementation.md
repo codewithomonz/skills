@@ -15,7 +15,7 @@ Identify fonts from `design.md` `typography.*.fontFamily`. System fonts (`system
 | Tiempos | Libre Baskerville |
 | SF Pro | Inter |
 
-A proprietary font not in this table: substitute the closest free font of the same classification (geometric sans → Jost/Poppins, grotesque/neo grotesque → Inter/Manrope, humanist sans → Source Sans, transitional/old style serif → nearest free serif) and say what you swapped. The table is a starting set, not the whole world of fonts.
+A proprietary font not in this table: substitute the closest free font of the same classification (geometric sans → Jost/Poppins, grotesque/neo grotesque → Inter/Manrope, humanist sans → Source Sans, transitional/old style serif → nearest free serif) and say what you swapped.
 
 **Loading:** Next.js → `next/font/google` with the `variable` option, applied to `<html>` in the root layout. Vite / other → `@import url(...)` at the top of the globals CSS, or `<link>` in the HTML entry point. Update `--font-sans` to match whatever was loaded.
 
@@ -237,7 +237,7 @@ Use CSS logical properties, not physical, so layouts work for RTL without overri
 
 ### Phase 6: Audit your own work before you report (the enforcement)
 
-The build is not done until you have checked it. Ambition in prose is not enough; this is the step that catches a build that quietly fell back to bare minimum.
+The build is not done until you have checked it. This step catches a build that quietly fell back to bare minimum.
 
 - **Audit against the bar's disqualifiers** (guide top) and this page's `design.md` mandate: lone form, dead space, naked or unstyled elements, default only styling, missing states, orphaned controls, a widget where a full surface was owed. Any hit → fix it, do not report around it.
 - **Look at it, if you can.** With a browser or screenshot tool, render the page (a desktop and one mobile width) and actually look. Fix any visual defect you see: a stray unstyled bar, broken spacing, a blank half page, a collapsed element. This is the only reliable catch for a render defect the code did not reveal.

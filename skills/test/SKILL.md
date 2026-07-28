@@ -7,14 +7,14 @@ description: "Run /test to write a test suite for code you just built or changed
 ## Output style (plain words, no dashes, no hyphens)
 
 <!-- OUTPUT-STYLE:START -->
-Write everything this skill produces, files and messages alike, in plain simple language. Keep technical terms that carry real meaning; explain each in plain words. Never use a dash or a hyphen as punctuation: no em dash, no en dash, and no hyphenated compounds. Write `read only`, not `read-only`. Say it in simple words, or reword the sentence. Code, file paths, command flags, and values other skills match on keep their hyphens. Use short sentences, commas, or parentheses. Clear beats clever.
+Write everything this skill produces, files and messages alike, in plain simple language. Talk to the reader as `you`, warm and direct like a colleague, and present every step as a recommendation they may run or skip, never an order. Keep technical terms that carry real meaning; explain each in plain words. Never use a dash or a hyphen as punctuation: no em dash, no en dash, and no hyphenated compounds. Write `read only`, not `read-only`. Say it in simple words, or reword the sentence. Code, file paths, command flags, and values other skills match on keep their hyphens. Use short sentences, commas, or parentheses. Clear beats clever.
 <!-- OUTPUT-STYLE:END -->
 
 ## What this skill does
 
-Role: a senior test engineer writing the suite the code deserves, no more, no less. Test what a caller relies on and what would actually break someone, not lines for a coverage number. Pick a strategy per file by reading what the thing is. Refuse tests that lock in scaffolding the slice was never meant to make real.
+Role: a senior test engineer writing the suite the code deserves. Test what a caller relies on and what would actually break someone, not lines for a coverage number. Pick a strategy per file by reading what it is. Refuse tests that lock in scaffolding the slice was never meant to make real.
 
-Target: the code changed in this branch but not yet committed. Each changed file is classified (pure logic, component, API route, page/flow) and tested with the right strategy; tests verify real behavior and catch regressions, not coverage farming. The main thread writes the tests itself (a read only `scout` may do the heavy file reading for a large set); with a governing spec, tests trace to its acceptance criteria (Steps 7 and 8).
+Target: the code changed in this branch but not yet committed. Each changed file is classified (pure logic, component, API route, page/flow) and tested with the right strategy. The main thread writes the tests itself (a read only `scout` may do the heavy file reading for a large set); with a governing spec, tests trace to its acceptance criteria (Steps 7 and 8).
 
 Does not write application code. Does not update `AGENTS.md`/`CLAUDE.md` context files (/sync owns that).
 
@@ -147,7 +147,7 @@ go get github.com/stretchr/testify                           # Go
 
 #### 7. Gather lightweight pointers (do NOT read heavy files here)
 
-Paths and cheap signals only; the heavy reading happens at write time (by you, or a `scout` if offloaded). Do not read specs or `design.md` in full here. Don't read source files here; they're read at write time.
+Paths and cheap signals only; the heavy reading happens at write time (by you, or a `scout` if offloaded). Do not read specs, `design.md`, or source files in full here.
 
 With file tools:
 - List the 3 most recently modified spec paths under `docs/specs/` (paths only).
@@ -170,7 +170,7 @@ Set `RUN_AFTER = yes | no` and apply it at write time.
 
 #### 8. Write the suite (main thread)
 
-The main thread writes the tests itself. Do not spawn a writer. Resolve this skill's folder to an absolute path (you already resolve these relative paths, so you know the folder) and Read `agent-prompt.md` and `writing-guide.md` now (only now, at write time): `agent-prompt.md` is your operating template, `writing-guide.md` is the strategy, tool rules, iteration loop, and report format you follow. Reading the changed files under test is the one expensive part; for a large or unfamiliar set, offload just the reading to a read only `scout` subagent on the cheapest model (Claude Code: `haiku`, not inheriting the session model) that returns a compact map, then write from it.
+The main thread writes the tests itself. Do not spawn a writer. Resolve this skill's folder to an absolute path and Read `agent-prompt.md` and `writing-guide.md` now (only now, at write time): `agent-prompt.md` is your operating template, `writing-guide.md` is the strategy, tool rules, iteration loop, and report format you follow. Reading the changed files under test is the one expensive part; for a large or unfamiliar set, offload just the reading to a read only `scout` subagent on the cheapest model (Claude Code: `haiku`, not inheriting the session model) that returns a compact map, then write from it.
 
 The inputs to apply (the labeled values you gathered):
 1. unit tool, E2E tool, additional tools, `INSTALL` state; `testDir`, `filePattern`, package manager, stack/framework, `packageRoot`; the classified scope (each file path with its class: logic / component / page flow / api server / cli); `RUN_COMMAND`, `RUN_AFTER`; project context plus the build approach line; the 3 recent spec paths or `none` (read only if relevant to what you're testing); the design.md path or `none`; `TRACE_TO_CONTRACT`, the governing spec path, and the `verify.md` path (each `none` if absent).

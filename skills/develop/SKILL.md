@@ -7,7 +7,7 @@ description: "Run /develop to build a feature, UI or backend, from an approved d
 ## Output style (plain words, no dashes, no hyphens)
 
 <!-- OUTPUT-STYLE:START -->
-Write everything this skill produces, files and messages alike, in plain simple language. Keep technical terms that carry real meaning; explain each in plain words. Never use a dash or a hyphen as punctuation: no em dash, no en dash, and no hyphenated compounds. Write `read only`, not `read-only`. Say it in simple words, or reword the sentence. Code, file paths, command flags, and values other skills match on keep their hyphens. Use short sentences, commas, or parentheses. Clear beats clever.
+Write everything this skill produces, files and messages alike, in plain simple language. Talk to the reader as `you`, warm and direct like a colleague, and present every step as a recommendation they may run or skip, never an order. Keep technical terms that carry real meaning; explain each in plain words. Never use a dash or a hyphen as punctuation: no em dash, no en dash, and no hyphenated compounds. Write `read only`, not `read-only`. Say it in simple words, or reword the sentence. Code, file paths, command flags, and values other skills match on keep their hyphens. Use short sentences, commas, or parentheses. Clear beats clever.
 <!-- OUTPUT-STYLE:END -->
 
 ## What this skill does
@@ -16,7 +16,7 @@ The builder: turns a spec plus project conventions into working code. Tracks: **
 
 ## Asks vs acts
 
-Gates, then acts: no upfront question rounds like `/architect`. Read the decision, build, ask only what the design left open (the visual direction when no reference was given; a business rule the spec didn't settle). Infer from the spec, `AGENTS.md`, and codebase; ask only what can't be inferred; recommend local implementation choices.
+Gates, then acts: no upfront question rounds like `/architect`. Read the decision, build, ask only what the design left open (the visual direction when no reference was given; a business rule the spec didn't settle). Infer from the spec, `AGENTS.md`, and codebase; recommend local implementation choices.
 
 ## Artifact ownership
 
@@ -25,7 +25,7 @@ Gates, then acts: no upfront question rounds like `/architect`. Read the decisio
 - Never writes spec content or deliberates a decision (flags the need, defers to `/architect`); never restructures root `AGENTS.md` (that's `/audit`); new area conventions go via `/sync` afterwards. **One narrow exception:** on `Build now, record it as an assumed spec` (Step 0), `/develop` may *create* a spec, but only in `Status: Assumed`, and only the assumption record fields (owed decision, assumption built on, authorized by, code area, requirements seeds). It never writes rationale and never advances an `Assumed` spec past that state; `/architect` owns clearing it. This is the only spec `/develop` creates.
 - One spec touch on an existing spec: the `**Status**:` line (umbrella decision → the `index.md`'s, never a child's), plus filling the feature's spec pointer line. Build start: `Proposed` → `In Progress`; build lands (feature → `done`): `In Progress` → `Accepted` (a spec is not `Accepted` until its feature ships). Never edit spec content, only that line, surgically: read it again right before writing; unexpected state (already `Accepted`, `Superseded`) → flag, don't clobber. **Never move a spec out of `Assumed`** (that is ratification, `/architect`'s job): an `Assumed` spec stays `Assumed` through the build even while the feature is `in-progress`, so it can never reach `Accepted` until `/architect` ratifies it. This is what blocks `done`.
 - Artifact base: `docs/` by default, `.workflow/` if `docs/` is a published docs site. Read from whichever exists (paths here assume `docs/`).
-- Shared scope: read it again right before ticking, edit only the specific checkbox, status, or pointer line (never rewrite the file); feature not as expected (already `done`, reworked) → flag, don't overwrite. The freshness check guards against rebuilding what a teammate shipped.
+- Shared scope: read it again right before ticking, edit only the specific checkbox, status, or pointer line (never rewrite the file); feature not as expected (already `done`, reworked) → flag, don't overwrite.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ### After the spec is written
 
-You wrote the spec yourself on the main thread. Now check your own work for completeness, offer the engineer a cross check, and confirm it. That check and every fix stay on the main thread; the only thing you may delegate is an optional read only cross check the engineer asks for (it reads the spec and returns a critique, writing nothing). Never fetch any of the spec's links again, at any point (they were fetched once during the design conversation and are now human facing).
+You wrote the spec yourself on the main thread. Now check your own work for completeness, offer the engineer a cross check, and confirm it. The check and every fix stay on the main thread; the only thing you may delegate is an optional read only cross check the engineer asks for (it reads the spec, returns a critique, writes nothing). Never fetch the spec's links again (fetched once during the conversation, now human facing).
 
 **First: did the write land?** If the spec file is missing or empty, something went wrong in the write; report it and write it again, never fabricate a spec summary. Only if the file exists, continue:
 
@@ -39,7 +39,7 @@ Act on the pick:
 - **I'll review it myself** → run no AI critique. Present the spec for the engineer to read, and say they are reviewing it themselves.
 - **Skip** → no critique.
 
-**All four branches then go to step 1.** The cross check never ends the run and never decides anything: it only produces a note. The moment it is done, whether a subagent critiqued the spec, the engineer read it themselves, or nothing ran at all, you present the spec and ask whether to accept it. Never treat a finished cross check as acceptance, and never accept the spec on the engineer's behalf.
+**All four branches then go to step 1.** The cross check only produces a note; it never ends the run or decides anything. When it is done (subagent critique, self review, or nothing ran), present the spec and ask whether to accept. Never treat a finished cross check as acceptance, or accept on the engineer's behalf.
 
 1. Tell the engineer the spec path, a one line preview from your report, and (if a cross check ran) its note:
 
