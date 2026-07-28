@@ -80,7 +80,7 @@ Depth governs only the stages **after** `/develop` (verify, test, review, docume
 
 The picker appends a free text Other automatically; in a plain text fallback offer the same four. Recommend by signal: throwaway prototype, experiment, or a personal one off → `Prototype`; a low risk product or internal tool you still want proven → `Alpha`; a normal production product → `Beta`; payments, auth, PII, compliance, regulated, or a team codebase → `GA`.
 
-Each tier also sets what `done` means (see `scope-template.md`); a feature built on an `Assumed` spec cannot be `done` until `/architect` ratifies it.
+Each tier also sets what `done` means (see `scope-template.md`); a feature built on an `Assumed` spec can still be `done`; the `Assumed` spec stays flagged as owing ratification until `/architect` ratifies it.
 
 Record the pick as the project default in the scope header `**Workflow:**` line (see `scope-template.md`). This default is what `/develop` reads (via the effective tier) to scale the next steps it recommends after a build.
 

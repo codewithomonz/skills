@@ -33,7 +33,7 @@ Spec status behaves one of two ways, decided by whether a buildable scope featur
 
 A spec documenting already shipped work (the "already built" path, or a linked feature already `existing`) is born `Accepted`.
 
-**The `Assumed` status.** `/develop` may create a spec in status `Assumed` when the engineer chooses to build before a load bearing decision is deliberated. It records the assumption the build used, not a deliberated decision, and it blocks the feature from `done`. Only `/architect` clears it, by ratifying (below). `/architect` never creates an `Assumed` spec; it only deliberates one that already exists.
+**The `Assumed` status.** `/develop` may create a spec in status `Assumed` when the engineer chooses to build before a load bearing decision is deliberated. It records the assumption the build used, not a deliberated decision. The feature can still be marked `done`; the `Assumed` spec stays flagged as owing ratification and does not block it. Only `/architect` clears the `Assumed` status, by ratifying (below). `/architect` never creates an `Assumed` spec; it only deliberates one that already exists.
 
 Writes no code. Never updates `AGENTS.md`/`CLAUDE.md` (/sync owns that).
 
@@ -189,7 +189,7 @@ If the task is to update or supersede an existing spec:
 When the topic resolves to an existing `Assumed` spec (the engineer built first via `/develop`'s escape hatch and is now ratifying, often phrased `/architect <feature>: ratify …`), pre-flight will find that spec. Read it in full: its `## Owed decision`, `## Assumption built on`, and `## Code area` tell you what was decided provisionally and where the code lives. Then run the normal design conversation, anchored to what was actually built, and deliberate the decision properly. Two outcomes:
 
 - **The assumption holds.** Fill in the real decision content (Context, Options considered, Decision, Rationale, the design section, Consequences) so the spec becomes a genuine deliberated record, and clear `Assumed`: set the `**Status**:` line to the feature's lifecycle state (`In Progress` if the feature is built but not yet `done`, `Accepted` if it is already verified and tested). `/develop` then closes it to `Accepted` at `done` as usual. The decision is no longer ephemeral.
-- **The assumption was wrong.** Write a corrected spec (`create` or `supersede`) with the real decision, mark the assumed spec `Superseded by [NNNN](…)`, and tell the engineer `/develop` must rebuild against the corrected spec before the feature can close.
+- **The assumption was wrong.** Write a corrected spec (`create` or `supersede`) with the real decision, mark the assumed spec `Superseded by [NNNN](…)`, and tell the engineer the build rests on a wrong assumption and should be redone against the corrected spec.
 
 Either way, ratification is why an `Assumed` spec can leave that state: `/develop` records the assumption, `/architect` confirms or corrects it and supplies the reasoning. Do not leave a spec `Assumed` after a ratify run.
 
