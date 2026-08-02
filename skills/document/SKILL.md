@@ -83,7 +83,7 @@ git tag --sort=-creatordate
 
 **Per type edge handling the main thread resolves before writing:**
 - **`release-note` range**: if tags exist, the range is `<previous-tag>..<latest-tag>` (or a range the engineer named). **If `NO_TAGS`**, don't guess, ask: "No version tags found. Give me a version name and range (e.g. `v1.0.0`, covering `<commit>..HEAD`), or I'll cover all commits since the first one." Pass the resolved range/version to the subagent.
-- **pr + gh**: only offer to create/update the PR via `gh` when **`GH_INSTALLED` and `HAS_REMOTE`**. If `PR_EXISTS`, the action is `gh pr edit` (update the body), **not** `gh pr create`. If gh isn't usable or no remote, the PR text is chat only, don't attempt `gh`.
+- **pr + gh**: only offer to create/update the PR via `gh` when **`GH_INSTALLED` and `HAS_REMOTE`**. If `PR_EXISTS`, the action is `gh pr edit` (update the body), **not** `gh pr create`. If gh isn't usable or no remote, the PR text is chat only, don't attempt `gh`. **Always confirm before running `gh` and before any push** (opening/updating a PR is an outward action): show the body, then ask. This holds regardless of the `AGENTS.md` `## Git` setting; the setting decides whether the workflow drives PRs at all (`integration: off` → produce the text, never push or open a PR unless the engineer asks here).
 - **postmortem**: git won't contain the incident narrative. Ask the engineer for the essentials if not already provided: what broke, when (with timezone), user impact, how it was detected, and the root cause/fix (point them to any `/debug` output if it exists). Pass their account as the incident facts. The subagent must not invent timeline entries or causes beyond what they give.
 
 ### 3. Write the document (main thread)
@@ -101,17 +101,17 @@ The inputs to apply:
 
 ### 4. Relay the result
 
+Lead with the type and where it landed; for `pr` the body IS the deliverable, so show it in full (per `docs/conventions.md`). Template:
+
 ```
-## /document complete
+## /document <pr | changelog | release-note | postmortem> Â· <PR body below | CHANGELOG.md | docs/releases/<v>.md | docs/postmortems/<file> | PR #N updated>
 
-**Type**: <pr | changelog | release-note | postmortem>
-**Written to**: <PR body shown below | CHANGELOG.md | docs/releases/<v>.md | docs/postmortems/<file>>
-
-<for pr: the title + body, ready to paste, or "PR #N updated" if gh was used>
-<for the others: a 2 to 3 line preview + the file path>
+<for pr: the title + full body, ready to paste Â· always shown in chat so it works without gh>
+<for the others: a 2 to 3 line preview>
+Scope: ticked `Document it`   (or "no scope row matched"; omit if not on the scope)
 ```
 
-For `pr`, always show the full text in chat (so it's usable even without `gh`). For the file types, show a short preview and the path. This skill does not commit, push, or merge. It produces the prose.
+This skill does not commit, push, or merge; it produces the prose (and ticks the `Document it` box per the closing gate above, the only scope edit it makes).
 
 ---
 

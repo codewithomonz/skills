@@ -49,6 +49,7 @@ Three rules bind every skill that touches them. Never overwrite curated prose in
 What `/audit` does with them (every phase that writes or audits root):
 
 - **Creating root** (greenfield, whole-repo): populate `## Stack` from the architecture spec if it exists (the source of truth, even on greenfield with no code); else derive from the code/manifest, else `<to be filled>`. Seed `## Build approach` from the scope header if one exists, a short line: name + one line principle; if no scope, or none set, write `<TBD, set by /scope>` rather than guessing.
+- **`## Git`** (from the git integration question): write the engineer's choice as a small block the other skills read, e.g. `- integration: on` / `- branch prefix: feat/` / `- commit: per-milestone`, or just `- integration: off`. Absent means off. It is a recorded preference, not a mirrored source of truth like Stack/Build approach; `/develop` reads it to branch and commit, `/document` to gate the PR.
 - **Auditing existing root** (gap-fill): either field missing or placeholder → ROOT_GAPS; either field contradicting its source → CONTRADICTIONS.
 
 This keeps the `/architect → /audit` handoff order-independent: root absorbs the decided stack whenever audit runs.
@@ -355,28 +356,20 @@ Only propose what is absent and genuinely useful. Do not rewrite existing conten
 
 ## Report format (end of every phase)
 
+Lead with what was written and the next step; list only what needs the engineer (per `docs/conventions.md`). The AGENTS.md contents are in the files, not the chat. Template:
+
 ```
-## /audit complete
+## /audit complete Â· <greenfield | whole-repo | area | gap-fill>
 
-**Phase**: <greenfield | whole-repo | area | gap-fill>
-**Scope**: <what was explored>
-
-**Discovered**:
-- <finding>
-- <finding>
-
-**Written**:
-- <file path> (<created | pointer added | updated>)
-
-**Root gaps flagged** (area / gap-fill phases):
-<ROOT_GAPS output or "none">
-
-**Proposed** (existing files):
-<PROPOSED_ADDITIONS block or "none">
-
-**Contradictions** (gap-fill phase, docs the code disproves; for a human to resolve):
-<CONTRADICTIONS entries or "none">
+**Wrote <AGENTS.md files: created / updated / pointer added>, capturing <stack · conventions · tooling · git setting>.**
+Next: <the first unticked scope box, usually `/develop tooling`, or `/develop <first feature>`>
+Heads up (need you):
+- Root gap: <ROOT_GAPS, one line each>   (area / gap-fill only)
+- Proposed additions to an existing file, apply? <PROPOSED_ADDITIONS, one line each>
+- Contradiction, docs the code disproves, resolve: <CONTRADICTIONS, one line each>
 ```
+
+Drop any Heads up bullet with no items, and the whole block if there are none.
 
 ---
 

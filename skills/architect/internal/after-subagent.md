@@ -8,7 +8,7 @@ You wrote the spec yourself on the main thread. Now check your own work for comp
 
 **Check your own work before presenting**: Read the spec you just wrote again. For a directory spec read both `index.md` and its `rationale.md` (the decision record sections live in `rationale.md`; the single file shape has everything in the one file). Verify all required sections exist across the file(s):
 - All modes: `## Summary` (the plain words human quick read, no dashes, in `index.md`/the file), `## Requirements` (IDed acceptance criteria, the confirmed spine), `## Decision`, `## Consequences` (build spec, in `index.md`/the file); and `## Context`, `## Options considered` (unless "Documenting a made decision"), `## Rationale` (decision record, in `rationale.md` for a directory spec, inline otherwise). A directory `index.md` also carries the one line `## Rationale` pointer to `rationale.md`.
-- Data backed modes: `## Build plan`: ordered tasks, each tagged with the AC(s) it satisfies, migration first; every AC traces to at least one task
+- Data backed modes: `## Build plan`: ordered tasks, each tagged with the AC(s) it satisfies, the data model migration sized to the feature (one normally; sliced for a large feature or thin thread/Facade); every AC traces to at least one task
 - Feature mode: `## Feature design` with the confirmed data model, the **Value sourcing** table (every value each action produces, computes, or displays has a named source; no blank source for a value an AC requires, that would be an undecided input left for the build), and Critical test scenarios (mapped to ACs) populated
 - Architecture mode: `## Proposed stack` with every relevant layer filled
 - Decision only specs (Architecture, Cross cutting): no `## Build plan` of implementation steps and no invented meta ACs; the spec is `## Proposed stack` / `## Standard definition`, and the executing feature (e.g. the scaffold sub task) derives its steps at `/develop` time. If a scaffold style build plan appears in a stack spec, strip it before presenting.
@@ -17,27 +17,25 @@ You wrote the spec yourself on the main thread. Now check your own work for comp
 
 If a required section is missing or a field is blank/placeholder, add this line directly after the spec path in the presentation: `⚠️ Incomplete: [section name] came out blank, e.g. "⚠️ Incomplete: ## Feature design > Security model was left as a placeholder. Request it in your feedback."`
 
-**Cross check (independent read of the spec, especially for decision completeness).** This is the layer that holds the "no decision gets made behind your back" guarantee, so it must not rest on the same model that wrote the spec (see spec 0002). Its strength is tier gated by the feature's Weight (read from the scope row in pre-flight):
+**Cross check (independent read of the spec, especially for decision completeness).** An independent model catches load bearing gaps the author is blind to. **Always ASK; never run it, and never skip it, on the engineer's behalf** (the point is to keep the engineer aware of load bearing decisions, so the decision to run it is theirs). Present the panel below; set the recommended option by the feature's effective workflow tier (its own tier tag if set, else the project default on the scope `**Workflow:**` line, read in pre-flight), and always make the recommendation explicit with a one line why:
+- **`GA` or `Beta` tier** → recommend `Another model` **strongly**: these are where a load bearing gap does real damage, and the kind of bug that motivates it is typically a `Beta` feature. Recommend it clearly, but the engineer chooses.
+- **`Alpha` tier** → recommend `Another model` for a foundational or risky spec, else offer without a strong push.
+- **`Prototype` tier, or no scope row** → recommend `Skip` (or `Same model` for a foundational spec).
 
-- **`full` weight** → run the `Another model` cross check **automatically**, do not offer to skip it. Tell the engineer: "This is a `full` weight feature, so I ran an independent cross model check of the spec's decision completeness." Then go to *Act on the pick* as if `Another model` was chosen.
-- **`medium` weight** → present the panel below with `Another model` marked recommended.
-- **`lean` weight, or no scope row** → present the panel with `Skip` (or `Same model` for a foundational spec) recommended by stakes, as before.
-
-When you present the panel (capability first: `AskUserQuestion` on Claude Code, else the same options as plain text; exactly one option marked recommended, the picker adds the custom slot):
-- **question**: "Cross check this spec before you review it?"
+Present the panel (capability first: `AskUserQuestion` on Claude Code, else the same options as plain text; exactly one option marked recommended per the tier rule above, the picker adds the custom slot):
+- **question**: "Cross check this spec before you review it? (Recommended: `<tier-based pick>`.)"
 - **header**: "Cross check"
 - **options**:
   - `Another model`: a read only critique pass on a different, capable model, which catches what the model that wrote the spec is blind to.
   - `Same model`: a read only critique pass on this same model (a fresh eyes critique of its own work).
   - `I'll review it myself`: no AI critique; show the spec and let the engineer scrutinise it.
   - `Skip`: go straight to accept.
-- Mark exactly one recommended by the spec's stakes: for a high risk / compliance touching / foundational ARCHITECTURE spec, recommend `Another model`; for a small or trivial spec, recommend `Skip`.
 
 Act on the pick:
 - **Another model / Same model** → spawn a READ-ONLY cross check subagent that reads the drafted spec and returns its critique only; it writes nothing, the main thread applies any fix. Set its model explicitly, not inherited: for `Another model`, a capable model different from the one that wrote the spec; for `Same model`, this session's model. Brief it to stress test the design from the spec text and its own knowledge only, covering two jobs:
   1. **Decision completeness (the primary job).** List every value each action, endpoint, or read path must produce, compute, or display to satisfy the acceptance criteria whose **source the spec does not name**, and every decision the builder will have to make that this spec does not settle. This is the check that catches a load bearing gap the spec author's own introspection missed (e.g. an AC that needs "the user's local day" with no timezone source named). Report each as a gap to close before build, not a nitpick.
   2. **Soundness.** Does the design hold up? Is there a materially simpler option? What failure mode is missed?
-  Brief it to NOT fetch the spec's reference links, now or later (human facing). Surface its findings as a short "Cross check" note; resolve every decision completeness gap yourself before presenting (name the source, ASK the engineer if only they know it), and fix other clear issues by targeted Edit. No subagent capability → do the same model pass inline on the main thread (weaker, note that the independent check did not run).
+  Brief it to NOT fetch the spec's reference links, now or later (human facing). Surface its findings as a short "Cross check" note. **Do NOT silently resolve or auto edit a decision completeness gap** (each one is a load bearing decision, and those are the engineer's, not yours): list every gap with the resolution you recommend (the source you would name, or the answer you would pick, always give your best recommendation, do not just present options), then ASK how to proceed, `Apply the recommended fixes` (recommended) · `Let me answer each one` · `Leave them, I'll decide later`. Edit the spec only on the engineer's pick. Pure soundness nitpicks (not a decision, e.g. a clearer wording) you may fix directly and note. No subagent capability → do the same model pass inline on the main thread (weaker, note that the independent check did not run).
 - **I'll review it myself** → run no AI critique. Present the spec for the engineer to read, and say they are reviewing it themselves.
 - **Skip** → no critique.
 
@@ -70,7 +68,7 @@ Act on the pick:
      1. Tick the decision box `[x]` (located as above) and remove the `· needs a decision` tag from the heading (it is decided now).
      2. Link the spec on the feature's pointer line, computed as a relative path from the scope file to the spec: from `docs/scope/api/…` to `docs/specs/api/0001-x.md` is `[0001](../../specs/api/0001-x.md)`; to a directory spec (umbrella or single with files), `[0001](../../specs/api/0001-x/index.md)`; single repo `docs/scope/` → `docs/specs/` is `../specs/…`.
      3. Define the build milestones, a rollup, never the atomic dump: add a `- [ ] Build it: /develop <feature>` box, and under it 2 to 5 milestone sub items rolled up from the spec's `## Build plan` by grouping its atomic tasks into coherent chunks (by AC cluster or by layer), each tagged with the ACs it covers. The atomic tasks and per task detail stay in the spec's `## Build plan`. The 2-to 5 is a guideline you reason about, not a rule: if it won't fit in about five milestones the feature is too big and should be split. Never a fixed milestone list; derive them from THIS spec's Build plan.
-     4. Add `- [ ] Verify it: /check verify <feature>` and `- [ ] Test it: /test <feature>` boxes after Build.
+     4. Add the closing boxes after Build, per the feature's **effective tier** (its own tier tag if set, else the project `**Workflow:**` default), so every box the feature will run has an owner: `- [ ] Verify it: /check verify <feature>` (Alpha and up) and `- [ ] Test it: /test <feature>` (Beta and up); for a `GA` tier feature also `- [ ] Review it (fresh model): /check review <feature>` and `- [ ] Document it: /document <feature>`. A `Prototype` feature needs none of these (it closes at `/develop`). Match the boxes to the effective tier; if a later tag change moves the tier, reconcile the boxes to it.
      5. Move the feature's status to `in-progress` (designing is progress) in the At a glance table and beside the heading.
      6. Enroll what the spec surfaced: a `## Follow-up` item that is really a separate feature (not part of this one) becomes a new scope feature tagged `from spec NNNN`. Deferred follow ups that block nothing go to the Deferred list.
 

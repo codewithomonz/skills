@@ -146,43 +146,30 @@ Overall verdict PASS requires every behavior verified with cited evidence, and (
 
 ### Step 5: Report
 
-Update the scope: if this feature is on the scope (`docs/scope/`) and the verdict is PASS, tick its `Verify it` box. What happens next depends on the workflow tier (scope header `**Workflow:**` line; a feature's higher Weight tag wins):
+Update the scope: if this feature is on the scope (`docs/scope/`) and the verdict is PASS, tick its `Verify it` box. **Also tick, in this feature's `verify.md`, each step you actually ran and that passed** (`- [ ]` → `- [x]`); leave a step unticked if it failed or you could not run it. This is per feature: only the feature you verified gets ticked, other features' `verify.md` files stay unchecked until you verify them (expected, not a miss). What happens next depends on the workflow tier (the effective tier: the feature's own tier tag if set, else the scope header `**Workflow:**` default):
 
-- **Lean** → `/check verify` is the last required stage, so on PASS also set the feature `done` (At a glance table and heading) and mirror the governing spec's `**Status**:` line `In Progress` → `Accepted` (surgically; not `In Progress` → flag, don't clobber). Exception: an `Assumed` spec blocks `done`, leave it `in-progress` and point to `/architect <feature>` to ratify first. Then point to `/sync`.
-- **Medium / Full** → leave `Test it` and the `done` status to `/test` and `/sync`; point to `/test <feature>` next.
+- **On PASS, offer `done`, don't gate it.** If `Verify it` is the feature's last box (`Alpha` tier), suggest marking it `done`: "Verified and passing, mark it `done`, or keep going, your call." On the engineer's go, set `done` and mirror the spec's `**Status**:` line `In Progress` → `Accepted` (surgically; not `In Progress` → flag). If there are later boxes (`Test it` at `Beta`/`GA`), suggest `/test <feature>` as the next step, but the engineer may mark `done` and skip it. An `Assumed` spec does not block `done`; flag it ("owes ratification, `/architect` when you can") and let them decide.
 
 On FAIL or BLOCKED, tick nothing and report the gaps. Advise `/clear` before moving to a new feature (the spec and `verify.md` hold the state, so a fresh session loses nothing and stays cheap).
 
+**Confirm the update as a closing gate** (don't skip it): state in the report exactly what you ticked in each file, e.g. "Scope: ticked `Verify it`. Spec: status → `Accepted`." No matching scope row → say so ("no scope row matched `<feature>`"), don't finish silently.
+
 ```
-## /check verify complete
+Lead with the verdict; list only what failed or is owed; point to verify.md for the rest (per `docs/conventions.md`). Template:
 
-**Ran**: <how the app was started: the exact command or url. "Not started" if you never ran it, in which case no ✅ or PASS is allowed>
-**Scope**: <N> behaviors checked, <M> not exercised
-**Spec**: spec NNNN <feature> · checklist from verify.md | spec ## Requirements   (omit this line when no governing spec)
+```
+## /check verify <feature> Â· <PASS | FAIL | BLOCKED>
 
-**Verified** ✅  (each line MUST cite its evidence; drop the line if you have none):
-- <behavior>: <what you observed>, evidence: <command + exit code | url + screenshot path | request + status + fields | query + result>
+**<PASS: all N behaviors met, every specced surface built · FAIL: M of N failed · BLOCKED: K couldn't be exercised>.**   (never PASS or ✅ if you did not actually run the app; say "not started")
+Next (this feature's next unticked box in the scope): PASS → `/test <feature>` if a `Test it` box remains, else the next feature · FAIL → `/debug <feature>` · missing surface → `/develop <feature>` · BLOCKED → what's needed to run it
 
-**Failed** ❌:
-- <behavior>: <what went wrong + exact error/screenshot path> → run /debug
+Failing / owed (omit if PASS):
+- <behavior or AC-N>: <what went wrong + evidence path> → <run /debug | build it, specced but missing | apply the migration, built but not live>
 
-**Blocked** ⚠️:
-- <behavior>: <what's needed to verify it (seed data, credentials, env)>
+Ran via <command/url>; verified <N> behaviors (evidence recorded). per AC detail in verify.md.
+```
 
-**Spec conformance**: PASS | FAIL | BLOCKED   (this whole block only when a spec contract was loaded)
-- AC-1 ✅ met: <the observation that confirmed it, with its evidence>
-- AC-2 ✅ met: <the observation that confirmed it, with its evidence>
-- AC-3 🚫 specced-but-missing: <spec requires it, no implementation> → build it before done
-- AC-4 ⚠️ specced-but-not-applied: <built but runtime check fails, e.g. migration not run> → <fix>
-
-**Missed surfaces** 🚫 (specced in spec, not built):
-- <page / route / table>: <where it was expected> → build before done
-
-**Not applied** ⚠️ (built but not live/correct at runtime):
-- <surface / criterion>: <the runtime failure, e.g. "migration committed, column absent from live schema"> → <apply/fix>
-
-**What /test should lock in**:
-- <the behaviors above, as permanent assertions>
+The passing behaviors and their evidence are the record, not the summary; do not list each one. `/test` reads verify.md itself, so no "what to lock in" list here.
 
 **For /check review**:
 - <anything that worked but looked fragile: slow response, console warning, missing empty state>
