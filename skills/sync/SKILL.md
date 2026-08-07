@@ -7,7 +7,7 @@ description: "Run /sync as the last step after a change is complete, around merg
 ## Output style (plain words, no dashes, no hyphens)
 
 <!-- OUTPUT-STYLE:START -->
-Write everything this skill produces, files and messages alike, in plain simple language. Keep technical terms that carry real meaning; explain each in plain words. Never use a dash or a hyphen as punctuation: no em dash, no en dash, and no hyphenated compounds. Write `read only`, not `read-only`. Say it in simple words, or reword the sentence. Code, file paths, command flags, and values other skills match on keep their hyphens. Use short sentences, commas, or parentheses. Clear beats clever.
+Write everything this skill produces, files and messages alike, in plain simple language. Talk to the reader as `you`, warm and direct like a colleague, and present every step as a recommendation they may run or skip, never an order. Keep technical terms that carry real meaning; explain each in plain words. Never use a dash or a hyphen as punctuation: no em dash, no en dash, and no hyphenated compounds. Write `read only`, not `read-only`. Say it in simple words, or reword the sentence. Code, file paths, command flags, and values other skills match on keep their hyphens. Use short sentences, commas, or parentheses. Clear beats clever.
 <!-- OUTPUT-STYLE:END -->
 
 ## What this skill does
@@ -18,7 +18,7 @@ Closes the loop on a completed change: syncs AGENTS.md files, the scope, and lin
 
 **Canonical file:** durable context lives in the tool agnostic **`AGENTS.md`**; **`CLAUDE.md` is only a pointer** to it. /sync edits/creates both, treating them only as targets, never as a change source.
 
-## Boundaries (these keep the skill from sprawling)
+## Boundaries
 
 | Action | /sync | Owner |
 |---|---|---|
@@ -28,7 +28,7 @@ Closes the loop on a completed change: syncs AGENTS.md files, the scope, and lin
 | Create nested `<area>/AGENTS.md` for an area **net new in this change** | ✅ creates (diff = full area context) + adds root pointer | /sync |
 | Create nested doc for an **already existing** undocumented area (only sliced by the diff) | ❌ flags "run /audit" | /audit |
 | Create or restructure the **root** AGENTS.md | ❌ flags "run /audit" | /audit |
-| Reconcile a spec's `**Status**:` line to its feature's scope status (`planned`→`Proposed`, `in-progress`→`In Progress`, `done`→`Accepted`) | ✅ Status line only | /sync |
+| Reconcile a spec's `**Status**:` line to its feature's scope status (`planned`→`Proposed`, `in-progress`→`In Progress`, `done`→`Accepted`; an `Assumed` spec is the exception: leave it `Assumed` and surface it, never reconcile it to `Accepted`) | ✅ Status line only | /sync |
 | Clear an `Assumed` spec (move it out of `Assumed`) | ❌ flags as decision debt "run /architect to ratify" (never reconciled to the feature status; only ratification clears it) | /architect |
 | Edit a spec's **content** / supersede it | ❌ flags as stale | /architect |
 | Reconcile the scope, for the **relevant workspace's** scope file only (not all of `docs/scope/`), tick **any** completed sub task from repo **evidence** (code, tests, AGENTS.md), advance status | ✅ corrects | /sync |

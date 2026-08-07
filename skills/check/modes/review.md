@@ -4,7 +4,7 @@ The `review` mode of `/check`: a senior code review, before merge, on a differen
 
 ## What this skill does
 
-Your role: the senior reviewer with fresh eyes, the one who didn't write the code. Read the diff for what it actually does, not what it was meant to do; rank findings by the harm they'd cause in production. The one rule that never bends: the review runs on a different model than wrote the code, because a model reviewing its own output shares its own blind spots; a second model catches what the first missed. Reviews the change set as a senior engineer reviews a teammate's pull request, and writes severity ranked findings.
+Your role: the senior reviewer with fresh eyes, the one who didn't write the code. Read the diff for what it actually does, not what it was meant to do; rank findings by the harm they'd cause in production. The one rule that never bends: the review runs on a different model than wrote the code, because a model reviewing its own output shares its blind spots. Write severity ranked findings.
 
 - Different Claude model, automatically: the review runs in a subagent on the contrasting Claude model. No API keys, no external setup.
 - Read only on code: produces findings, never edits the code under review.
@@ -37,7 +37,7 @@ Any Agent Skills client on macOS, Linux, or Windows:
 
 ### 1. Determine the author model, then pick a DIFFERENT reviewer
 
-Do not rely on self-introspection: the model executing this skill cannot reliably name itself, and the "You are powered by…" line in the system prompt is written at session start and goes stale the moment the user switches with `/model`. Detect from durable config, then confirm.
+Do not rely on self-introspection or the "You are powered by…" system prompt line (written at session start, stale the moment the user switches with `/model`): the model cannot reliably name itself. Detect from durable config, then confirm.
 
 **1a: Detect the author model (best effort).** The author model is whatever is generating code in this session. Using your file tools, read `ANTHROPIC_MODEL` from the env if set, and check `.claude/settings.local.json`, `.claude/settings.json`, and the user-level `.claude/settings.json` in the home directory for a `"model"` value. Map ids to families: `claude-opus-*` → `opus`, `claude-sonnet-*` → `sonnet`, `claude-haiku-*` → `haiku`, `claude-fable-*` → `fable`. Use the system-prompt value only as a last-resort weak hint, possibly stale.
 
@@ -136,7 +136,7 @@ For a high-stakes change (verdict was Blocked or Changes requested, or the chang
 
 **Tick the scope box (closing gate).** If the reviewed feature has a row in `docs/scope/`, tick its `Review it` box (the review ran; the box marks that, not that it passed) and confirm it in the report: "Scope: ticked `Review it`." No matching row → say so ("no scope row matched `<feature>`, tick it manually or enroll it"). This is the only scope edit review makes; it writes no code, tests, or specs.
 
-This skill is complete after relaying. It does not fix the findings (the implementer does that) and does not invoke other skills. If the engineer wants the issues fixed, that's a normal follow-up; /check review's job is the assessment.
+This skill is complete after relaying. It does not fix findings (the implementer does) or invoke other skills; its job is the assessment.
 
 ---
 

@@ -14,7 +14,7 @@ Do not read the other plan route files unless the classification changes. After 
 
 ### Step 2: Ask (generated question walk, as decision panels)
 
-Do not follow a fixed script or a set number of rounds. Enumerate the planning dimensions THIS product needs (generate them from the idea and `AGENTS.md`), then ask them one after another as batched decision panels (up to 4 per panel), as many panels as it takes. Infer and skip anything already stated; ask everything else. The more thoroughly you ask, the better the scope: never cap the questions to save time, and never end while a load bearing dimension is unasked.
+Do not follow a fixed script or a set number of rounds. Enumerate the planning dimensions THIS product needs (generate them from the idea and `AGENTS.md`), then ask them one after another as batched decision panels (up to 4 per panel), as many panels as it takes. Infer and skip anything already stated; ask everything else. Never cap the questions to save time, and never end while a load bearing dimension is unasked.
 
 Cover at least these dimension groups (a checklist of what to reach, not an order to recite; add product specific dimensions freely):
 
@@ -35,7 +35,7 @@ Decides how every feature is sliced and sequenced. No fixed procedure; reason ab
 
 Reason out the pick, never hardcode it or its mechanics: default for a proper production build is Tracer Bullet; shift only when the goal calls for it (fast validation of one core loop → Skateboard; the experience/funnel is the product → Journey; a quick clickable prototype → Facade, said plainly to be prototype grade). One line why in terms of this product. Never name a tool; the approach shapes how, not with what.
 
-**Once the approach is chosen, read its persona file and adopt that engineer's role for decomposition** (`approaches/tracer-bullet.md`, `approaches/skateboard.md`, `approaches/facade.md`, or `approaches/journey.md`). Read only the chosen one. Each persona defines how that engineer slices, what the first slice or deliverable is, what is real vs deferred, and the sequencing, with a worked example. All slicing and sequencing in Step 4 and Step 5 follows that persona, so the four approaches produce genuinely different scopes for the same product, not the same list relabeled. A per feature override (Step 5) reads that feature's chosen persona and applies it to that feature only.
+**Once the approach is chosen, read its persona file and adopt that engineer's role for decomposition** (`approaches/tracer-bullet.md`, `approaches/skateboard.md`, `approaches/facade.md`, or `approaches/journey.md`). Read only the chosen one. Each persona defines how that engineer slices, what the first slice or deliverable is, what is real vs deferred, and the sequencing, with a worked example. All slicing and sequencing in Step 4 and Step 5 follows that persona. A per feature override (Step 5) reads that feature's chosen persona and applies it to that feature only.
 
 Record it (the propagation source) in the scope header: `Build approach: <name> (<one-line principle>)`. A project wide convention: `/audit` and `/sync` persist it into root `AGENTS.md`; `/architect`, `/develop`, `/check verify` read and honor it. It also sets each feature's Phase (its slice / journey), shown in the At a glance table and as section grouping.
 
@@ -66,7 +66,7 @@ Analysis/inventory is not a scope row: cataloguing duplication, listing call sit
 
 ### Step 5b: Recommend the workflow depth (decision panel)
 
-Now that the features exist, propose the project's default **workflow depth**: how many stages a feature normally runs after `/develop`. This is a recommendation, not a question you ask cold: reason from the product (throwaway prototype vs internal tool vs real product vs payments/auth/compliance/regulated/team work) and the mix of feature weights you just assigned, then present a panel with exactly one recommended. Each level names the stages it runs, so the tradeoff is visible. Frame it: "Based on what you're building, here's the workflow I recommend. You can override, and any single feature can still run heavier."
+Now that the features exist, propose the project's default **workflow depth**: how many stages a feature normally runs after `/develop`. Reason from the product (throwaway prototype vs internal tool vs real product vs payments/auth/compliance/regulated/team work) and the mix of feature weights you just assigned, then present a panel with exactly one recommended.
 
 Depth governs only the stages **after** `/develop` (verify, test, review, document). It does **not** turn off the `/architect` gate: at every depth, a feature that needs a load bearing decision still runs `/architect` first (or records an `Assumed` spec). Alpha does not mean "skip architect"; it means lean features are usually `Needs spec: no`, so you rarely reach it.
 
@@ -80,9 +80,9 @@ Depth governs only the stages **after** `/develop` (verify, test, review, docume
 
 The picker appends a free text Other automatically; in a plain text fallback offer the same four. Recommend by signal: throwaway prototype, experiment, or a personal one off → `Prototype`; a low risk product or internal tool you still want proven → `Alpha`; a normal production product → `Beta`; payments, auth, PII, compliance, regulated, or a team codebase → `GA`.
 
-Each tier also sets what `done` means (see `scope-template.md`): `Prototype` closes on build plus self check (`/develop` marks it), `Alpha` on `/check verify` passing, `Beta`/`GA` on the tests being in (and the review for `GA`). The `Assumed` spec done gate still holds at every tier: a feature built on an unratified assumption cannot be `done` until `/architect` ratifies it.
+Each tier also sets what `done` means (see `scope-template.md`); a feature built on an `Assumed` spec can still be `done`; the `Assumed` spec stays flagged as owing ratification until `/architect` ratifies it.
 
-Record the pick as the project default in the scope header `**Workflow:**` line (see `scope-template.md`). It sets the baseline each feature inherits; a feature tagged with a higher tier than the project default (Step 5) runs its heavier path, and one tagged lower runs lighter. This default is what `/develop` reads (via the effective tier) to scale the next steps it recommends after a build.
+Record the pick as the project default in the scope header `**Workflow:**` line (see `scope-template.md`). This default is what `/develop` reads (via the effective tier) to scale the next steps it recommends after a build.
 
 ### Step 6: Write the scope (single file or epic split)
 

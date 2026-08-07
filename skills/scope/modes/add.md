@@ -10,5 +10,3 @@ Inferred when a scope exists and the argument names a single feature: `/scope <a
 4. Set `Needs spec?` with the invent test: would building it require a decision the engineer has not made? Yes for a provider/library choice, a data model, a cross cutting pattern, the design system, a whole page/screen with no spec yet, or behavior that is not trivial (search, filtering, recommendations). No only for pure implementation an existing `design.md`/spec/convention covers. Unsure → yes; `GA`/`Beta` tier → almost always yes. Yes means its next step is `/architect <feature>`.
 5. Append: an At a glance row (next free `#`, status `planned`) + a feature section under its phase with intent, a `Done when:` line, its one entry checkbox (no build task breakdown, derived from the spec later). Epic split: add to the right epic file, bump that epic's rollup in `index.md`.
 6. Report briefly (mode: add): the row, tier (inherited or overridden), approach (inherited or overridden), Needs spec, next command.
-
-Never enumerate build tasks in add mode; `/architect` derives milestones after the spec, and atomic tasks stay in the spec.
